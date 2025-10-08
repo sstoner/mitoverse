@@ -1,0 +1,26 @@
+# Allow all crawlers
+User-agent: *
+Allow: /
+
+# Disallow API routes (if any)
+Disallow: /api/
+
+# Crawl delay (optional, in seconds)
+# Crawl-delay: 1
+
+# Sitemap location (update with your actual domain)
+Sitemap: https://yourdomain.com/sitemap.xml
+
+# Specific bot rules
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+# Block aggressive bots (optional)
+User-agent: AhrefsBot
+Crawl-delay: 10
+
+User-agent: SemrushBot
+Crawl-delay: 10

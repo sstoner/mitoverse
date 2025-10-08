@@ -1,0 +1,310 @@
+{
+  "common": {
+    "appName": "线粒体蛋白荧光强度分析平台",
+    "loading": "加载中...",
+    "error": "错误",
+    "success": "成功",
+    "reset": "重置",
+    "start": "开始",
+    "cancel": "取消",
+    "confirm": "确认",
+    "download": "下载",
+    "upload": "上传",
+    "analyze": "分析"
+  },
+  "nav": {
+    "brand": "线粒体分析",
+    "home": "首页",
+    "analyze": "分析",
+    "docs": "文档",
+    "footer": {
+      "product": "产品",
+      "startAnalysis": "开始分析",
+      "about": "关于",
+      "aboutUs": "关于我们",
+      "contactUs": "联系我们",
+      "legal": "法律",
+      "privacy": "隐私政策",
+      "terms": "服务条款",
+      "copyright": "© 2025 BlackPig Bioinfo. All rights reserved."
+    }
+  },
+  "home": {
+    "hero": {
+      "title": "专业的线粒体蛋白荧光强度分析平台",
+      "subtitle": "基于云端的显微镜图像分析服务，支持 CZI 文件格式，提供精确的荧光强度测量和专业的可视化结果",
+      "ctaStart": "开始分析",
+      "ctaDocs": "查看文档",
+      "demoImage": "分析结果示例"
+    },
+    "features": {
+      "title": "为什么选择我们？",
+      "subtitle": "专业、快速、准确的线粒体蛋白分析解决方案",
+      "items": {
+        "fast": {
+          "title": "快速分析",
+          "description": "基于云端计算，秒级完成图像分析，无需本地安装软件"
+        },
+        "professional": {
+          "title": "专业可靠",
+          "description": "采用经典的图像处理算法，提供多种阈值分割方法"
+        },
+        "cziSupport": {
+          "title": "支持 CZI",
+          "description": "原生支持 Zeiss CZI 文件格式，保留完整的元数据信息"
+        },
+        "accurate": {
+          "title": "精确测量",
+          "description": "提供多项关键指标，包括平均强度、总强度、像素统计等"
+        }
+      }
+    },
+    "process": {
+      "title": "如何使用？",
+      "subtitle": "三步完成专业级的线粒体蛋白分析",
+      "steps": {
+        "upload": {
+          "title": "上传文件",
+          "description": "上传您的 CZI 格式显微镜图像文件，支持拖拽上传"
+        },
+        "configure": {
+          "title": "配置参数",
+          "description": "选择线粒体通道和目标蛋白通道，调整分析参数"
+        },
+        "results": {
+          "title": "获取结果",
+          "description": "查看详细的分析结果和可视化图像，导出数据"
+        }
+      },
+      "ctaButton": "立即开始分析"
+    },
+    "cta": {
+      "title": "准备好开始分析了吗？",
+      "subtitle": "无需注册，立即体验专业的线粒体蛋白荧光强度分析服务",
+      "button": "开始免费分析"
+    }
+  },
+  "analyze": {
+    "title": "线粒体蛋白荧光强度分析",
+    "subtitle": "上传 CZI 文件，配置分析参数，获取专业的分析结果",
+    "mode": {
+      "single": "单文件分析",
+      "batch": "批量分析"
+    },
+    "fileSource": {
+      "local": "本地上传",
+      "cloud": "云存储 URL"
+    },
+    "upload": {
+      "stepTitle": "1. 文件来源",
+      "source": {
+        "local": "本地上传",
+        "cloud": "云存储 URL"
+      },
+      "dragDrop": "点击或拖拽 CZI 文件到此区域",
+      "dragActive": "释放以上传文件...",
+      "maxFiles": "支持",
+      "single": "单文件",
+      "batch": "最多 {count} 个文件",
+      "batchHint": "💡 批量模式：最多可同时上传 50 个 CZI 文件进行分析",
+      "selectedFiles": "已选择的文件：",
+      "cloudUrl": "云存储文件 URL",
+      "cloudUrlPlaceholder": "https://example.s3.amazonaws.com/file.czi?...",
+      "cloudUrlHint": "支持 S3、OSS 等云存储的预签名 URL",
+      "cloudFilename": "文件名（可选）",
+      "cloudFilenamePlaceholder": "例如: sample.czi",
+      "cloudFilenameHint": "用于结果标识，如不填写将从 URL 中提取",
+      "cloudWarning": "⚠️ 注意：确保 URL 可公开访问或使用有效的预签名 URL"
+    },
+    "parameters": {
+      "stepTitle": "2. 配置参数",
+      "mitochondrialChannel": "线粒体通道",
+      "mitochondrialChannelHint": "线粒体染料所在的通道（如 MitoTracker）",
+      "targetProteinChannel": "目标蛋白通道",
+      "targetProteinChannelHint": "目标蛋白所在的通道（如 GFP、RFP 标记）",
+      "thresholdMethod": "阈值分割方法",
+      "thresholdMethodHint": "选择适合您图像特征的阈值分割方法",
+      "thresholdOptions": {
+        "otsu": "Otsu - 适用于双峰分布（推荐）",
+        "li": "Li - 基于最小交叉熵",
+        "yen": "Yen - 适用于低对比度"
+      },
+      "generateVisualization": "生成可视化图像",
+      "generateVisualizationHint": "生成包含原始图像、掩膜和分析结果的可视化图像（会增加处理时间）",
+      "helpTitle": "💡 参数说明",
+      "help1": "• 线粒体通道: 通常为通道 0（红色）",
+      "help2": "• 目标蛋白通道: 通常为通道 2（绿色）",
+      "help3": "• 阈值方法: Otsu 适用于大多数情况",
+      "help4": "• 生成可视化: 建议开启以查看结果"
+    },
+    "actions": {
+      "startAnalysis": "开始分析",
+      "analyzing": "分析中...",
+      "reset": "重置"
+    },
+    "status": {
+      "ready": "准备就绪",
+      "readyDesc": "上传您的 CZI 文件，配置分析参数，然后点击开始分析按钮即可获取结果",
+      "batchMode": "批量分析模式",
+      "batchModeDesc": "上传多个 CZI 文件，系统将批量处理并生成汇总结果，支持导出 CSV/JSON 格式",
+      "analyzing": "分析中...",
+      "batchAnalyzing": "正在批量分析中...",
+      "wait": "请稍候，这可能需要几秒钟时间",
+      "batchWait": "请稍候，这可能需要一段时间",
+      "progress": "{current} / {total} 文件",
+      "failed": "分析失败"
+    },
+    "errors": {
+      "noFile": "请先上传文件",
+      "noCloudUrl": "请输入云存储文件 URL",
+      "analysisFailed": "分析失败，请重试",
+      "cloudAnalysisFailed": "从云存储分析失败，请重试",
+      "batchAnalysisFailed": "批量分析失败，请重试",
+      "batchPartialFailed": "{count} 个文件分析失败，请查看详情"
+    },
+    "results": {
+      "stepTitle": "3. 分析结果",
+      "export": {
+        "title": "导出分析结果",
+        "description": "下载原始数据或可视化图像",
+        "json": "JSON",
+        "csv": "CSV",
+        "image": "图像"
+      },
+      "parameters": {
+        "title": "分析参数",
+        "mitochondrialChannel": "线粒体通道",
+        "targetProteinChannel": "目标蛋白通道",
+        "thresholdMethod": "阈值方法"
+      },
+      "metrics": {
+        "title": "分析结果",
+        "filename": "文件名",
+        "filenameDesc": "分析的文件名称",
+        "avgIntensity": "平均荧光强度",
+        "avgIntensityDesc": "线粒体区域内目标蛋白的平均荧光强度",
+        "totalIntensity": "总荧光强度",
+        "totalIntensityDesc": "线粒体区域内目标蛋白的总荧光强度",
+        "pixelCount": "线粒体像素数",
+        "pixelCountDesc": "被识别为线粒体的像素数量",
+        "mitoAvgIntensity": "线粒体平均强度",
+        "mitoAvgIntensityDesc": "线粒体通道本身的平均强度",
+        "coverage": "掩膜覆盖率",
+        "coverageDesc": "线粒体占图像的百分比",
+        "threshold": "阈值",
+        "thresholdDesc": "使用的分割阈值",
+        "status": {
+          "good": "正常",
+          "warning": "注意",
+          "error": "异常"
+        }
+      },
+      "visualization": {
+        "title": "可视化图像",
+        "topLeft": "左上：原始线粒体通道",
+        "topLeftDesc": "显示线粒体染料的原始荧光信号",
+        "topRight": "右上：线粒体掩膜",
+        "topRightDesc": "阈值分割后的线粒体区域",
+        "bottomLeft": "左下：原始目标蛋白通道",
+        "bottomLeftDesc": "目标蛋白的原始荧光信号",
+        "bottomRight": "右下：掩膜内的目标蛋白",
+        "bottomRightDesc": "线粒体区域内的目标蛋白分布"
+      },
+      "batch": {
+        "title": "批量分析统计",
+        "totalFiles": "总文件数",
+        "successful": "成功分析",
+        "failed": "分析失败",
+        "avgIntensity": "平均强度",
+        "avgCoverage": "平均覆盖率",
+        "failedFiles": "分析失败的文件",
+        "detailedResults": "详细分析结果",
+        "visualization": "可视化图像"
+      }
+    },
+    "hints": {
+      "title": "重要提示",
+      "hint1": "• 仅支持 Zeiss CZI 格式的显微镜图像文件",
+      "hint2": "• 文件大小建议不超过 100MB，以确保分析速度",
+      "hint3": "• 确保图像包含至少 2 个通道（线粒体和目标蛋白）",
+      "hint4": "• 分析结果仅供科研参考，不作为临床诊断依据"
+    }
+  },
+  "docs": {
+    "title": "使用文档",
+    "subtitle": "详细的使用指南和 API 文档",
+    "sections": {
+      "quickStart": "快速开始",
+      "parameters": "参数说明",
+      "results": "结果指标",
+      "api": "API文档",
+      "faq": "常见问题"
+    },
+    "quickStart": {
+      "intro": "按照以下步骤开始您的第一次分析：",
+      "title": "快速开始",
+      "step1": "上传 CZI 文件",
+      "step2": "配置分析参数",
+      "step3": "点击开始分析",
+      "step4": "查看结果和可视化"
+    },
+    "parameters": {
+      "title": "参数说明",
+      "mitochondrial": {
+        "title": "线粒体通道",
+        "description": "指定线粒体染料所在的通道索引。通常 CZI 文件中，红色荧光通道（如 MitoTracker）为通道 0。"
+      },
+      "target": {
+        "title": "目标蛋白通道",
+        "description": "指定目标蛋白所在的通道索引。通常绿色荧光通道（如 GFP）为通道 2。"
+      },
+      "threshold": {
+        "title": "阈值方法",
+        "otsu": "Otsu: 最常用，适合双峰分布的图像",
+        "li": "Li: 适合低对比度图像",
+        "yen": "Yen: 适合高对比度图像"
+      },
+      "visualization": {
+        "title": "生成可视化",
+        "description": "是否生成包含原始图像、掩膜和结果的4宫格可视化图像。"
+      }
+    },
+    "results": {
+      "title": "结果指标解释",
+      "avgIntensity": "平均荧光强度",
+      "avgIntensityDesc": "目标蛋白在线粒体区域的平均荧光强度值",
+      "totalIntensity": "总荧光强度",
+      "totalIntensityDesc": "线粒体区域内目标蛋白的总荧光强度",
+      "pixelCount": "线粒体像素数",
+      "pixelCountDesc": "检测到的线粒体区域总像素数",
+      "mitoAvgIntensity": "线粒体平均强度",
+      "mitoAvgIntensityDesc": "线粒体通道在线粒体区域的平均强度"
+    },
+    "api": {
+      "title": "API 文档",
+      "intro": "本系统提供 RESTful API，可通过 HTTP 请求进行程序化调用。",
+      "endpoint": "API 端点",
+      "endpoints": "API 端点",
+      "viewDocs": "查看完整 API 文档"
+    },
+    "faq": {
+      "title": "常见问题",
+      "q1": {
+        "question": "支持哪些文件格式？",
+        "answer": "目前仅支持 Zeiss CZI 格式的显微镜图像文件。"
+      },
+      "q2": {
+        "question": "如何选择正确的通道？",
+        "answer": "通常线粒体染料（红色）在通道 0，目标蛋白（绿色）在通道 2。可以在显微镜软件中查看具体的通道配置。"
+      },
+      "q3": {
+        "question": "分析需要多长时间？",
+        "answer": "单个文件通常在几秒到十几秒内完成，具体取决于文件大小和复杂度。批量分析时间会相应增加。"
+      },
+      "q4": {
+        "question": "结果数据如何使用？",
+        "answer": "可以导出为 CSV 格式在 Excel 中分析，或导出为 JSON 格式用于进一步的编程处理。"
+      }
+    }
+  }
+}
