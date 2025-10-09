@@ -11,6 +11,9 @@ import os
 import shutil
 import httpx
 from urllib.parse import urlparse
+import asyncio
+from concurrent.futures import ProcessPoolExecutor
+import multiprocessing
 from analyzer import MitochondrialAnalyzer
 
 
@@ -373,6 +376,176 @@ async def batch_analyze_czi(
     )
 
 
+def analyze_single_file_sync(
+    file_path: str,
+    filename: str,
+    mitochondrial_channel: int,
+    target_protein_channel: int,
+    threshold_method: str,
+    generate_visualization: bool
+) -> Dict:
+    """
+    同步分析单个文件（用于进程池并发）
+    
+    这个函数在独立的进程中运行，避免 GIL 限制
+    """
+    try:
+        analyzer = MitochondrialAnalyzer(threshold_method=threshold_method)
+        result = analyzer.analyze_czi_file(
+            file_path=file_path,
+            mitochondrial_channel_index=mitochondrial_channel,
+            target_protein_channel_index=target_protein_channel,
+            generate_visualization=generate_visualization
+        )
+        return {"success": True, "data": result}
+    except Exception as e:
+        return {
+            "success": False,
+            "filename": filename,
+            "error": str(e)
+        }
+
+
+@app.post("/batch-analyze-concurrent", response_model=AnalysisResponse)
+async def batch_analyze_concurrent(
+    files: list[UploadFile] = File(..., description="多个CZI格式的显微镜图像文件"),
+    mitochondrial_channel: int = Form(0, description="线粒体通道索引（默认为0）"),
+    target_protein_channel: int = Form(2, description="目标蛋白通道索引（默认为2）"),
+    threshold_method: str = Form("otsu", description="阈值分割方法：otsu, li, yen（默认为otsu）"),
+    generate_visualization: bool = Form(False, description="是否生成可视化图像（默认为False）")
+):
+    """
+    批量分析多个CZI文件 - 并发优化版本
+    
+    使用进程池并发处理多个文件，显著提升分析速度
+    
+    - **files**: 上传的多个CZI文件
+    - **mitochondrial_channel**: 线粒体通道索引（可选，默认0）
+    - **target_protein_channel**: 目标蛋白通道索引（可选，默认2）
+    - **threshold_method**: 阈值分割方法（可选，默认otsu）
+    - **generate_visualization**: 是否生成可视化图像（可选，默认False）
+    """
+    
+    # 验证阈值方法
+    valid_methods = ['otsu', 'li', 'yen']
+    if threshold_method not in valid_methods:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Invalid threshold method. Must be one of: {', '.join(valid_methods)}"
+        )
+    
+    # 第一步：保存所有文件到临时位置
+    temp_files = []
+    for file in files:
+        # 验证文件格式
+        if not file.filename or not file.filename.endswith('.czi'):
+            continue
+            
+        temp_file = tempfile.NamedTemporaryFile(delete=False, suffix='.czi')
+        shutil.copyfileobj(file.file, temp_file)
+        temp_file.close()
+        
+        temp_files.append({
+            'path': temp_file.name,
+            'filename': file.filename
+        })
+        
+        await file.close()
+    
+    if not temp_files:
+        return AnalysisResponse(
+            success=False,
+            message="没有有效的 CZI 文件",
+            data={
+                "results": [],
+                "failed_files": [],
+                "total_files": len(files),
+                "successful_count": 0,
+                "failed_count": len(files)
+            }
+        )
+    
+    # 第二步：使用进程池并发分析
+    max_workers = min(multiprocessing.cpu_count(), len(temp_files), 4)  # 最多4个进程
+    
+    try:
+        with ProcessPoolExecutor(max_workers=max_workers) as executor:
+            loop = asyncio.get_event_loop()
+            
+            # 创建所有任务
+            tasks = [
+                loop.run_in_executor(
+                    executor,
+                    analyze_single_file_sync,
+                    temp_file['path'],
+                    temp_file['filename'],
+                    mitochondrial_channel,
+                    target_protein_channel,
+                    threshold_method,
+                    generate_visualization
+                )
+                for temp_file in temp_files
+            ]
+            
+            # 并发执行所有任务
+            results = await asyncio.gather(*tasks, return_exceptions=True)
+    
+    finally:
+        # 第三步：清理所有临时文件
+        for temp_file in temp_files:
+            try:
+                os.unlink(temp_file['path'])
+            except Exception as e:
+                print(f"Error deleting temporary file: {e}")
+    
+    # 第四步：处理结果
+    results_list = []
+    failed_files = []
+    
+    for i, result in enumerate(results):
+        if isinstance(result, Exception):
+            # 任务执行时发生异常
+            failed_files.append({
+                "filename": temp_files[i]['filename'],
+                "error": str(result)
+            })
+        elif isinstance(result, dict):
+            if result.get("success"):
+                # 分析成功
+                results_list.append(result["data"])
+            else:
+                # 分析失败
+                failed_files.append({
+                    "filename": result.get("filename", temp_files[i]['filename']),
+                    "error": result.get("error", "Unknown error")
+                })
+        else:
+            # 未知结果类型
+            failed_files.append({
+                "filename": temp_files[i]['filename'],
+                "error": "Unknown result type"
+            })
+    
+    # 返回结果
+    return AnalysisResponse(
+        success=len(results_list) > 0,
+        message=f"并发分析完成: 成功 {len(results_list)} 个，失败 {len(failed_files)} 个",
+        data={
+            "results": results_list,
+            "failed_files": failed_files,
+            "total_files": len(temp_files),
+            "successful_count": len(results_list),
+            "failed_count": len(failed_files),
+            "concurrent": True  # 标记这是并发版本
+        }
+    )
+
+
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(
+        app, 
+        host="0.0.0.0", 
+        port=8000,
+        timeout_keep_alive=300  # 增加超时到5分钟
+    )

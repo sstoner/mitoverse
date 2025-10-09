@@ -1,6 +1,7 @@
 # Docker 部署指南
 
 ## 目录
+
 - [本地开发](#本地开发)
 - [生产部署](#生产部署)
 - [GitHub Actions CI/CD](#github-actions-cicd)
@@ -12,12 +13,14 @@
 ### 快速开始
 
 1. **克隆仓库**
+
    ```bash
    git clone https://github.com/sstoner/mitoverse.git
    cd mitoverse
    ```
 
 2. **使用 Docker Compose 启动**
+
    ```bash
    # 启动开发环境（带热重载）
    docker-compose up -d
@@ -71,6 +74,7 @@ docker rm mitoverse-api
 ### 使用 Nginx 反向代理
 
 1. **启动生产环境**
+
    ```bash
    # 启动包含 Nginx 的完整栈
    docker-compose --profile production up -d
@@ -80,6 +84,7 @@ docker rm mitoverse-api
    ```
 
 2. **配置 SSL 证书**
+
    ```bash
    # 创建 SSL 目录
    mkdir -p ssl
@@ -94,6 +99,7 @@ docker rm mitoverse-api
    ```
 
 3. **更新 Nginx 配置**
+
    ```bash
    # 编辑 nginx.conf
    vim nginx.conf
@@ -144,10 +150,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '2.0'
+          cpus: "2.0"
           memory: 4G
         reservations:
-          cpus: '1.0'
+          cpus: "1.0"
           memory: 2G
 ```
 
@@ -158,17 +164,20 @@ services:
 `.github/workflows/docker-build.yml` 提供自动化构建和部署:
 
 **触发条件**:
+
 - 推送到 `master`/`main`/`develop` 分支
 - 创建版本标签 (`v*.*.*`)
 - Pull Request 到 `master`/`main`
 
 **流程**:
+
 1. **构建镜像**: 多平台构建 (amd64, arm64)
 2. **推送到 Docker Hub**: 自动打标签
 3. **安全扫描**: Trivy 漏洞扫描
 4. **测试**: PR 时运行单元测试和集成测试
 
 **标签策略**:
+
 - `latest`: master/main 分支最新提交
 - `v1.2.3`: 语义化版本标签
 - `v1.2`: 主次版本
@@ -214,10 +223,10 @@ git push origin v1.0.0
 1. 进入仓库 **Settings** → **Secrets and variables** → **Actions**
 2. 添加以下 secrets:
 
-   | Secret Name       | 值                  | 说明                |
-   |-------------------|---------------------|---------------------|
-   | `DOCKER_USERNAME` | Docker Hub 用户名   | 你的 Docker Hub 用户名 |
-   | `DOCKER_PASSWORD` | Access Token        | 刚生成的访问令牌    |
+   | Secret Name       | 值                | 说明                   |
+   | ----------------- | ----------------- | ---------------------- |
+   | `DOCKER_USERNAME` | Docker Hub 用户名 | 你的 Docker Hub 用户名 |
+   | `DOCKER_PASSWORD` | Access Token      | 刚生成的访问令牌       |
 
 3. 保存 secrets
 
@@ -232,6 +241,7 @@ git push origin master
 ```
 
 检查构建状态:
+
 - GitHub: **Actions** 标签页
 - Docker Hub: 仓库页面查看新推送的镜像
 
@@ -242,6 +252,7 @@ git push origin master
 **问题**: `ERROR: Could not build wheels for numpy`
 
 **解决**:
+
 ```dockerfile
 # Dockerfile 已包含必要的系统依赖
 RUN apt-get update && apt-get install -y \
@@ -256,6 +267,7 @@ RUN apt-get update && apt-get install -y \
 **症状**: `docker-compose ps` 显示 `unhealthy`
 
 **排查**:
+
 ```bash
 # 查看健康检查日志
 docker inspect --format='{{json .State.Health}}' mitoverse-api | jq
@@ -272,12 +284,15 @@ docker-compose logs api
 **问题**: `413 Request Entity Too Large`
 
 **解决**:
+
 1. 修改 `nginx.conf`:
+
    ```nginx
    client_max_body_size 500M;
    ```
 
 2. 修改 `docker-compose.yml`:
+
    ```yaml
    api:
      environment:
@@ -294,13 +309,14 @@ docker-compose logs api
 **症状**: 构建在 "Build and push Docker image" 步骤超时
 
 **解决**:
+
 ```yaml
 # .github/workflows/docker-build.yml
 - name: Build and push Docker image
-  timeout-minutes: 60  # 增加超时时间
+  timeout-minutes: 60 # 增加超时时间
   uses: docker/build-push-action@v5
   with:
-    cache-from: type=gha  # 使用 GitHub Actions 缓存
+    cache-from: type=gha # 使用 GitHub Actions 缓存
     cache-to: type=gha,mode=max
 ```
 
@@ -309,6 +325,7 @@ docker-compose logs api
 **问题**: ARM64 平台构建失败
 
 **解决**:
+
 ```bash
 # 本地测试多平台构建
 docker buildx build \
@@ -327,6 +344,7 @@ env:
 **错误**: `denied: requested access to the resource is denied`
 
 **解决**:
+
 1. 确认 Docker Hub 用户名正确（不是邮箱）
 2. 重新生成 Access Token 并更新 GitHub Secrets
 3. 检查 Token 权限包含 `Read, Write`
@@ -337,6 +355,7 @@ env:
 **症状**: 容器被 OOM Killer 终止
 
 **解决**:
+
 ```yaml
 # docker-compose.yml
 services:
@@ -344,14 +363,15 @@ services:
     deploy:
       resources:
         limits:
-          memory: 4G  # 增加内存限制
+          memory: 4G # 增加内存限制
     environment:
-      - PYTHONUNBUFFERED=1  # 减少内存缓冲
+      - PYTHONUNBUFFERED=1 # 减少内存缓冲
 ```
 
 ### Q8: 开发模式热重载不工作
 
 **检查**:
+
 ```bash
 # 确认卷挂载正确
 docker-compose config

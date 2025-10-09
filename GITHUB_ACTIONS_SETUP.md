@@ -22,7 +22,7 @@
 2. 填写仓库信息:
    - **Name**: `mitoverse-api`
    - **Description**: `Mitochondrial Protein Fluorescence Intensity Analysis API`
-   - **Visibility**: 
+   - **Visibility**:
      - `Public` - 任何人都可以拉取（推荐开源项目）
      - `Private` - 仅你和授权用户可以拉取
 3. 点击 **"Create"**
@@ -174,12 +174,12 @@ docker stop $(docker ps -q --filter ancestor=yourusername/mitoverse-api:latest)
 
 GitHub Actions 会根据不同的触发条件自动打标签:
 
-| 触发条件 | 镜像标签 | 示例 |
-|---------|---------|------|
-| 推送到 `master` | `latest` | `yourusername/mitoverse-api:latest` |
-| 推送到 `develop` | `develop` | `yourusername/mitoverse-api:develop` |
-| 推送 tag `v1.2.3` | `v1.2.3`, `v1.2`, `v1`, `latest` | 多个标签 |
-| Pull Request | `pr-123` | `yourusername/mitoverse-api:pr-123` |
+| 触发条件          | 镜像标签                         | 示例                                 |
+| ----------------- | -------------------------------- | ------------------------------------ |
+| 推送到 `master`   | `latest`                         | `yourusername/mitoverse-api:latest`  |
+| 推送到 `develop`  | `develop`                        | `yourusername/mitoverse-api:develop` |
+| 推送 tag `v1.2.3` | `v1.2.3`, `v1.2`, `v1`, `latest` | 多个标签                             |
+| Pull Request      | `pr-123`                         | `yourusername/mitoverse-api:pr-123`  |
 
 ### 发布新版本
 
@@ -233,12 +233,14 @@ cache-to: type=gha,mode=max
 
 ### ❌ 错误: denied: requested access to the resource is denied
 
-**原因**: 
+**原因**:
+
 - Docker Hub 用户名错误
 - Access Token 无效或权限不足
 - 仓库名称不存在
 
 **解决**:
+
 1. 确认 `DOCKER_USERNAME` 是用户名而不是邮箱
 2. 重新生成 Access Token（确保有 `Read, Write` 权限）
 3. 确认 Docker Hub 仓库已创建
@@ -246,12 +248,14 @@ cache-to: type=gha,mode=max
 
 ### ❌ 错误: Error: buildx failed with: error: failed to solve
 
-**原因**: 
+**原因**:
+
 - Dockerfile 语法错误
 - 依赖安装失败
 - 网络问题
 
 **解决**:
+
 ```bash
 # 本地测试构建
 docker build -t test-build .
@@ -263,6 +267,7 @@ docker build --progress=plain -t test-build .
 ### ❌ 工作流运行但镜像没有推送
 
 **检查**:
+
 1. 查看 Actions 日志中的 "Log in to Docker Hub" 步骤
 2. 确认 Secrets 已正确配置
 3. 检查是否有网络错误或超时
@@ -270,6 +275,7 @@ docker build --progress=plain -t test-build .
 ### ⚠️ 构建时间过长
 
 **优化**:
+
 1. 使用 `.dockerignore` 减少构建上下文
 2. 使用 GitHub Actions 缓存（已默认启用）
 3. 只构建 `linux/amd64` 平台
@@ -277,11 +283,13 @@ docker build --progress=plain -t test-build .
 
 ### ❌ 健康检查失败
 
-**原因**: 
+**原因**:
+
 - `/health` 端点不存在或返回错误
 - 容器内网络问题
 
 **解决**:
+
 ```bash
 # 测试容器内健康检查
 docker exec container_name curl -f http://localhost:8000/health

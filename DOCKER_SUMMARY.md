@@ -7,6 +7,7 @@
 ### 核心配置文件
 
 #### 1. `Dockerfile`
+
 - **用途**: 构建后端 API 的 Docker 镜像
 - **特性**:
   - 基于 Python 3.11-slim
@@ -16,14 +17,16 @@
   - 暴露 8000 端口
 
 #### 2. `.dockerignore`
+
 - **用途**: 排除不需要打包到镜像中的文件
-- **内容**: 
+- **内容**:
   - Python 缓存和虚拟环境
   - 前端子模块（web/）
   - 测试文件和文档
   - Git 相关文件
 
 #### 3. `docker-compose.yml`
+
 - **用途**: 本地开发和生产环境编排
 - **服务**:
   - `api`: 后端 FastAPI 服务（开发模式支持热重载）
@@ -35,6 +38,7 @@
   - 网络隔离
 
 #### 4. `nginx.conf`
+
 - **用途**: Nginx 反向代理配置
 - **功能**:
   - 请求转发到后端 API
@@ -47,6 +51,7 @@
 ### CI/CD 配置
 
 #### 5. `.github/workflows/docker-build.yml`
+
 - **用途**: GitHub Actions 自动化构建和部署工作流
 - **触发条件**:
   - 推送到 `master`/`main`/`develop` 分支
@@ -63,6 +68,7 @@
 ### 辅助脚本
 
 #### 6. `docker-start.sh`
+
 - **用途**: 一键启动和管理 Docker 服务
 - **命令**:
   - `dev`: 启动开发环境
@@ -78,6 +84,7 @@
 ### 文档
 
 #### 7. `DOCKER_GUIDE.md`
+
 - **内容**: 完整的 Docker 使用指南
 - **章节**:
   - 本地开发（快速开始、手动构建、开发模式）
@@ -91,6 +98,7 @@
   - 安全建议
 
 #### 8. `GITHUB_ACTIONS_SETUP.md`
+
 - **内容**: GitHub Actions 和 Docker Hub 配置的分步指南
 - **章节**:
   - Docker Hub 仓库创建
@@ -104,6 +112,7 @@
   - 配置清单
 
 #### 9. `README.md` (已更新)
+
 - **新增内容**:
   - Docker 快速开始说明
   - Docker Compose 使用示例
@@ -162,13 +171,13 @@ docker-compose --profile production up -d
 
 ### 标签策略
 
-| 触发 | 标签 |
-|-----|------|
-| 推送到 `master` | `latest` |
-| 推送到 `develop` | `develop` |
-| 标签 `v1.2.3` | `v1.2.3`, `v1.2`, `v1`, `latest` |
-| PR #123 | `pr-123` |
-| 提交 `abc1234` | `master-abc1234` |
+| 触发             | 标签                             |
+| ---------------- | -------------------------------- |
+| 推送到 `master`  | `latest`                         |
+| 推送到 `develop` | `develop`                        |
+| 标签 `v1.2.3`    | `v1.2.3`, `v1.2`, `v1`, `latest` |
+| PR #123          | `pr-123`                         |
+| 提交 `abc1234`   | `master-abc1234`                 |
 
 ## 🏗️ 架构说明
 
@@ -276,10 +285,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '2.0'
+          cpus: "2.0"
           memory: 4G
         reservations:
-          cpus: '1.0'
+          cpus: "1.0"
           memory: 2G
 ```
 
@@ -288,6 +297,7 @@ services:
 使用此清单确保配置完整:
 
 ### Docker 本地开发
+
 - [ ] `Dockerfile` 存在且可构建
 - [ ] `.dockerignore` 已配置
 - [ ] `docker-compose.yml` 可正常启动
@@ -296,6 +306,7 @@ services:
 - [ ] 热重载功能正常
 
 ### Nginx 生产环境
+
 - [ ] `nginx.conf` 已配置
 - [ ] 文件上传大小正确（500M）
 - [ ] Rate limiting 已启用
@@ -303,6 +314,7 @@ services:
 - [ ] 生产模式可正常启动
 
 ### GitHub Actions CI/CD
+
 - [ ] `.github/workflows/docker-build.yml` 存在
 - [ ] Docker Hub 仓库已创建
 - [ ] Access Token 已生成
@@ -314,6 +326,7 @@ services:
 - [ ] 安全扫描通过（无高危漏洞）
 
 ### 文档完整性
+
 - [ ] `README.md` 包含 Docker 使用说明
 - [ ] `DOCKER_GUIDE.md` 完整详细
 - [ ] `GITHUB_ACTIONS_SETUP.md` 步骤清晰
@@ -322,6 +335,7 @@ services:
 ## 🎯 下一步建议
 
 ### 立即行动
+
 1. ✅ 阅读 [GITHUB_ACTIONS_SETUP.md](./GITHUB_ACTIONS_SETUP.md) 配置 CI/CD
 2. ✅ 在 Docker Hub 创建仓库
 3. ✅ 配置 GitHub Secrets
@@ -329,6 +343,7 @@ services:
 5. ✅ 验证镜像可正常拉取和运行
 
 ### 短期优化
+
 - [ ] 添加更多单元测试和集成测试
 - [ ] 配置 SSL 证书（Let's Encrypt）
 - [ ] 设置监控和告警（如 Prometheus + Grafana）
@@ -336,6 +351,7 @@ services:
 - [ ] 添加日志聚合（如 ELK Stack）
 
 ### 长期计划
+
 - [ ] 考虑 Kubernetes 部署（如需要高可用）
 - [ ] 实现蓝绿部署或金丝雀发布
 - [ ] 添加性能测试和压力测试
@@ -345,8 +361,9 @@ services:
 ## 🛠️ 维护建议
 
 ### 定期检查
+
 - **每周**: 查看 GitHub Actions 构建状态
-- **每月**: 
+- **每月**:
   - 更新 Python 依赖（`pip list --outdated`）
   - 检查安全漏洞扫描结果
   - 清理旧的 Docker 镜像
@@ -356,6 +373,7 @@ services:
   - 更新文档
 
 ### 安全措施
+
 - 定期更新 Docker Hub Access Token
 - 监控 GitHub Security Alerts
 - 及时修复 Trivy 扫描发现的漏洞
@@ -373,6 +391,7 @@ services:
 欢迎提交 Issue 和 Pull Request！
 
 贡献流程:
+
 1. Fork 项目
 2. 创建特性分支 (`git checkout -b feature/AmazingFeature`)
 3. 提交更改 (`git commit -m 'Add some AmazingFeature'`)
@@ -394,6 +413,7 @@ services:
 ## 📝 更新日志
 
 ### v1.0.0 (2024-01-XX)
+
 - ✨ 添加 Dockerfile 支持
 - ✨ 添加 docker-compose.yml 编排
 - ✨ 添加 Nginx 反向代理配置
@@ -409,6 +429,7 @@ services:
 **🎉 恭喜！你的项目现在已经支持 Docker 容器化和自动化 CI/CD 了！**
 
 开始使用:
+
 ```bash
 ./docker-start.sh dev
 ```
